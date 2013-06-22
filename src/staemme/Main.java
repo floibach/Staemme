@@ -31,6 +31,10 @@ import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.JCheckBox;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JTextPane;
 
 public class Main {
 
@@ -41,9 +45,10 @@ public class Main {
 	private final JTextField woodCapacy = new JTextField();
 	private JTextField ironCapacy;
 	private JTextField clayCapacy;
-	private ArrayList<Unit> units;
-	private JTable table_1;
-	private JTable table;
+	private JCheckBox isPike;
+	private JCheckBox isSword;
+	private JTextField testField;
+	private JPanel unitsBuilding;
 	/**
 	 * Launch the application.
 	 */
@@ -65,18 +70,8 @@ public class Main {
 	 */
 	public Main() {
 		initialize();
-		units = initializeUnits();
 	}	
 	
-	private ArrayList<Unit> initializeUnits()
-	{
-		ArrayList<Unit> units = new ArrayList<Unit>();
-		units.add(new Unit(50,30,10, "/units/unit_spear.png"));
-		units.add(new Unit(30, 30, 70,"/units/unit_sword.png"));
-
-		
-		return units;
-	}
 	
 	private void initialize() {
 		frame = new JFrame();
@@ -87,72 +82,106 @@ public class Main {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
 		
-		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("Units bauen", null, panel_1, null);
-		panel_1.setLayout(null);
+		unitsBuilding = new JPanel();
+		tabbedPane.addTab("Units bauen", null, unitsBuilding, null);
+		unitsBuilding.setLayout(null);
 		woodCapacy.setBounds(59, 11, 86, 20);
-		panel_1.add(woodCapacy);
+		unitsBuilding.add(woodCapacy);
 		woodCapacy.setColumns(10);
 		
 		JLabel lblWood = new JLabel("");
+		lblWood.setLabelFor(woodCapacy);
 		lblWood.setVerticalAlignment(SwingConstants.TOP);
 		lblWood.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		lblWood.setIcon(new ImageIcon(Main.class.getResource("/ress/holz.png")));
 		lblWood.setBounds(25, 17, 27, 14);
-		panel_1.add(lblWood);
+		unitsBuilding.add(lblWood);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setIcon(new ImageIcon(Main.class.getResource("/ress/lehm.png")));
 		lblNewLabel_1.setBounds(173, 17, 27, 14);
-		panel_1.add(lblNewLabel_1);
+		unitsBuilding.add(lblNewLabel_1);
 		
 		clayCapacy = new JTextField();
+		lblNewLabel_1.setLabelFor(clayCapacy);
 		clayCapacy.setColumns(10);
 		clayCapacy.setBounds(205, 11, 86, 20);
-		panel_1.add(clayCapacy);
+		unitsBuilding.add(clayCapacy);
 		
 		JLabel label = new JLabel("");
 		label.setIcon(new ImageIcon(Main.class.getResource("/ress/eisen.png")));
 		label.setBounds(332, 17, 27, 14);
-		panel_1.add(label);
+		unitsBuilding.add(label);
 		
 		ironCapacy = new JTextField();
+		label.setLabelFor(ironCapacy);
 		ironCapacy.setColumns(10);
 		ironCapacy.setBounds(362, 11, 86, 20);
-		panel_1.add(ironCapacy);
+		unitsBuilding.add(ironCapacy);
 		
 		JButton calculate = new JButton("berechne");
+		calculate.addActionListener(
+				new ActionListener() 
+				{
+					public void actionPerformed(ActionEvent arg0) 
+					{
+						start();
+					}
+				});
 		calculate.setBounds(480, 10, 89, 23);
-		panel_1.add(calculate);
-		
-		table = new JTable();
-		JLabel testLabel = new JLabel("asfd");
-		table.setRowSelectionAllowed(false);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		Object[][] data = new Object[][] {
-//				{null, null, null},
-//				{null, null, null},
-//			};
-//		String[] columnNames = new String[] {
-//				"New column", "New column", "New column"
-//			};
-		Vector rowA = new Vector();
-		rowA.add(testLabel);
-		Vector data = new Vector();
-		data.add(rowA);
-		Vector columnNames = new Vector();
-		columnNames.add("bla");
-		table.setModel(new DefaultTableModel(data,columnNames));
-		table.setBounds(10, 76, 559, 247);
-		
-		panel_1.add(table);
+		unitsBuilding.add(calculate);
 		
 		
+		isPike = new JCheckBox();
+		isPike.setBounds(25, 42, 27, 23);
+		unitsBuilding.add(isPike);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(Main.class.getResource("/units/unit_spear.png")));
+		lblNewLabel.setLabelFor(isPike);
+		lblNewLabel.setBounds(53, 42, 27, 23);
+		unitsBuilding.add(lblNewLabel);
+		
+		isSword = new JCheckBox("");
+		isSword.setBounds(122, 42, 27, 23);
+		unitsBuilding.add(isSword);
+		
+		JLabel lblNewLabel_2 = new JLabel("");
+		lblNewLabel_2.setIcon(new ImageIcon(Main.class.getResource("/units/unit_sword.png")));
+		lblNewLabel_2.setLabelFor(isSword);
+		lblNewLabel_2.setBounds(155, 42, 27, 23);
+		unitsBuilding.add(lblNewLabel_2);
 		
 		
+
 		
 		JPanel troopStrengh = new JPanel();
 		tabbedPane.addTab("Truppen St\u00E4rke", null, troopStrengh, null);
+	}
+	
+	private void start()
+	{
+		ArrayList<Unit> selectedUnits = new ArrayList<Unit>();
+		if(isPike.isSelected())
+		{
+			selectedUnits.add(new Unit(50,30,10, "/units/unit_spear.png"));		
+		}
+		if(isSword.isSelected())
+		{
+			selectedUnits.add(new Unit(30, 30, 70,"/units/unit_sword.png"));		
+			
+		}
+		
+		Calculator.calculate(selectedUnits);
+		
+		for(int i=0;i<selectedUnits.size();i++)
+		{
+			JLabel lblNewLabel_3 = new JLabel("New label");
+			lblNewLabel_3.setBounds(25, 100+14*i+5, 60, 14);
+			unitsBuilding.add(lblNewLabel_3);		
+		}	
+				
+		unitsBuilding.repaint();
 	}
 }
